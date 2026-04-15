@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Bookstore{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<div class="hero">
+    <h1>Welcome to the Bookstore</h1>
+    <p>Explore our curated collection of books.</p>
+</div>
+<div class="books-grid">
+    <!-- Placeholder cards – replace with real data later -->
+    <div class="book-card">
+        <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=900&q=80" alt="Cover of Sample Book 1" loading="lazy">
+        <h3>Sample Book 1</h3>
+        <p>Author One</p>
+        <p class="price">$19.99</p>
+        <a href="#" class="details-link">View Details</a>
+    </div>
+    <div class="book-card">
+        <img src="https://picsum.photos/400?random=2" alt="Sample Book 2 Cover" loading="lazy">
+        <h3>Sample Book 2</h3>
+        <p>Author Two</p>
+        <p class="price">$24.99</p>
+        <a href="#" class="details-link">View Details</a>
+    </div>
+    <div class="book-card">
+        <img src="https://picsum.photos/400?random=3" alt="Sample Book 3 Cover" loading="lazy">
+        <h3>Sample Book 3</h3>
+        <p>Author Three</p>
+        <p class="price">$15.00</p>
+        <a href="#" class="details-link">View Details</a>
+    </div>
+</div>
+{% endblock %}
