@@ -1,1 +1,257 @@
-this is details
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ book.name }} — Bookstore{% endblock %}
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'css/details.css' %}">
+{% endblock %}
+
+{% block content %}
+
+
+<!-- Main Product Section -->
+<main class="product-layout" aria-label="Product Details">
+
+    <!-- ── Image Gallery ── -->
+    <section class="gallery" aria-label="Product Images">
+
+        <!-- Thumbnails -->
+        <div class="gallery-thumbs" role="list">
+            {% for img in book.images.all %}
+            <img id="thumb-{{ forloop.counter }}" class="gallery-thumb {% if forloop.first %}active{% endif %}"
+                src="{{ img.image.url }}" alt="{{ book.name }} image {{ forloop.counter }}" loading="lazy"
+                role="listitem" onclick="switchImage('{{ img.image.url }}', this)">
+            {% empty %}
+            <!-- Placeholder thumbnails when no images -->
+            <div class="gallery-thumb active"
+                style="background:var(--grey-200);display:flex;align-items:center;justify-content:center;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--grey-500)" stroke-width="1.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <path d="m21 15-5-5L5 21" />
+                </svg>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Main image -->
+        <div class="gallery-main">
+            {% if book.discount_price %}
+            <span class="gallery-badge">Sale</span>
+            {% endif %}
+
+            {% with primary_img=book.images.first %}
+            {% if primary_img %}
+            <img id="main-image" src="{{ primary_img.image.url }}" alt="Cover of {{ book.name }}" loading="eager">
+            {% else %}
+            <!-- No-image placeholder -->
+            <div id="main-image"
+                style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:var(--grey-100);">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--grey-300)" stroke-width="1">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <path d="m21 15-5-5L5 21" />
+                </svg>
+                <span
+                    style="font-size:12px;font-weight:500;color:var(--grey-300);text-transform:uppercase;letter-spacing:0.1em;">No
+                    Image</span>
+            </div>
+            {% endif %}
+            {% endwith %}
+        </div>
+
+    </section>
+
+    <!-- ── Product Info ── -->
+    <section class="product-info" aria-label="Product Information">
+
+        {% if book.category %}
+        <p class="product-category">{{ book.category.name }}</p>
+        {% endif %}
+
+        <h1 class="product-title">{{ book.name }}</h1>
+
+        <!-- Pricing -->
+        <div class="price-row">
+            {% if book.discount_price %}
+            <span class="price-original has-discount">${{ book.price }}</span>
+            <span class="price-discount">${{ book.discount_price }}</span>
+            {% with savings=book.price|add:"-"|add:book.discount_price %}
+            <span class="price-savings">SALE</span>
+            {% endwith %}
+            {% else %}
+            <span class="price-original">${{ book.price }}</span>
+            {% endif %}
+        </div>
+
+        <!-- Availability -->
+        <div class="availability">
+            <span class="availability-dot"></span>
+            In stock — Ready to ship
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-stack">
+            <a href="#" class="btn-primary" id="add-to-cart-btn" role="button">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <path d="M16 10a4 4 0 0 1-8 0" />
+                </svg>
+                Add to Cart
+            </a>
+            <a href="#" class="btn-secondary" id="wishlist-btn" role="button">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+                Add to Wishlist
+            </a>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Description -->
+        <p class="product-description-label">About this book</p>
+        <p class="product-description">
+            {% if book.description %}
+            {{ book.description }}
+            {% else %}
+            No description available for this title.
+            {% endif %}
+        </p>
+
+        <!-- Meta -->
+        <div class="meta-grid">
+            {% if book.category %}
+            <div class="meta-item">
+                <span class="meta-label">Genre</span>
+                <span class="meta-value">{{ book.category.name }}</span>
+            </div>
+            {% endif %}
+            <div class="meta-item">
+                <span class="meta-label">Format</span>
+                <span class="meta-value">Paperback</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Language</span>
+                <span class="meta-value">English</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Availability</span>
+                <span class="meta-value" style="color:var(--green);">In Stock</span>
+            </div>
+        </div>
+
+        <!-- Accordion -->
+        <div class="accordion" role="list">
+
+            <div class="accordion-item" role="listitem">
+                <button class="accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+                    Shipping &amp; Returns
+                    <span class="accordion-icon" aria-hidden="true">+</span>
+                </button>
+                <div class="accordion-body">
+                    <p>Free standard shipping on orders over $35. Express shipping available at checkout. Returns
+                        accepted within 30 days of delivery — no questions asked. Items must be in original condition.
+                    </p>
+                </div>
+            </div>
+
+            <div class="accordion-item" role="listitem">
+                <button class="accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+                    Member Benefits
+                    <span class="accordion-icon" aria-hidden="true">+</span>
+                </button>
+                <div class="accordion-body">
+                    <p>Bookstore Members enjoy free standard shipping, exclusive early access to new releases, and
+                        priority customer support. Join free today at checkout.</p>
+                </div>
+            </div>
+
+            <div class="accordion-item" role="listitem">
+                <button class="accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+                    Secure Checkout
+                    <span class="accordion-icon" aria-hidden="true">+</span>
+                </button>
+                <div class="accordion-body">
+                    <p>Your payment is processed securely through 256-bit SSL encryption. We accept Visa, Mastercard,
+                        American Express, PayPal, and Apple Pay.</p>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+<!-- Mobile Sticky CTA Bar -->
+<div class="mobile-sticky-bar" aria-label="Add to cart">
+    <a href="#" class="btn-secondary" style="flex:1;" role="button">Wishlist</a>
+    <a href="#" class="btn-primary" style="flex:2;" role="button">Add to Cart</a>
+</div>
+
+<script>
+    // ─── Image Gallery Switcher ─────────────────────────────────
+    function switchImage(url, thumbEl) {
+        const mainImg = document.getElementById('main-image');
+        if (mainImg && mainImg.tagName === 'IMG') {
+            mainImg.style.opacity = '0';
+            setTimeout(function () {
+                mainImg.src = url;
+                mainImg.style.opacity = '1';
+            }, 150);
+        }
+        document.querySelectorAll('.gallery-thumb').forEach(function (t) {
+            t.classList.remove('active');
+        });
+        if (thumbEl) thumbEl.classList.add('active');
+    }
+
+    // ─── Accordion ──────────────────────────────────────────────
+    function toggleAccordion(trigger) {
+        const item = trigger.closest('.accordion-item');
+        const body = item.querySelector('.accordion-body');
+        const isOpen = item.classList.contains('open');
+
+        // Close all first
+        document.querySelectorAll('.accordion-item.open').forEach(function (openItem) {
+            openItem.classList.remove('open');
+            openItem.querySelector('.accordion-body').classList.remove('open');
+            openItem.querySelector('.accordion-trigger').setAttribute('aria-expanded', 'false');
+        });
+
+        if (!isOpen) {
+            item.classList.add('open');
+            body.classList.add('open');
+            trigger.setAttribute('aria-expanded', 'true');
+        }
+    }
+
+    // ─── Add to Cart button micro-animation ─────────────────────
+    document.querySelectorAll('#add-to-cart-btn, .mobile-sticky-bar .btn-primary').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            const original = btn.textContent.trim();
+            btn.textContent = '✓ Added!';
+            btn.style.background = 'var(--green)';
+            setTimeout(function () {
+                btn.innerHTML = `
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          Add to Cart`;
+                btn.style.background = '';
+            }, 1800);
+        });
+    });
+</script>
+
+{% endblock %}
