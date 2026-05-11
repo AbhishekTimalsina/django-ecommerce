@@ -1,7 +1,7 @@
 from .models import Book, Category
 from django.views.generic import ListView, TemplateView, DetailView
 from django.db.models import Q
-
+  
 # Create your views here.
 class HomeView(ListView):
      model = Book
