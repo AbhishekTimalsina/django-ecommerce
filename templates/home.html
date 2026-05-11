@@ -12,11 +12,31 @@
 <div class="books-grid">
     {% for book in object_list %}
     <div class="book-card">
-        <img src="{{book.images.first.image.url}}" alt="Cover of Sample Book 1" loading="lazy">
-        <h3>{{ book.name }}</h3>
-        <p>{{ book.description }}</p>
-        <p class="price">${{book.price}}</p>
-        <a href="{% url 'product_detail' book.pk %}" class="details-link">View Details</a>
+        <div class="book-card-image-wrapper">
+            {% if book.discount_price %}
+            <span class="sale-badge">Sale</span>
+            {% endif %}
+            {% if book.images.first %}
+            <img src="{{book.images.first.image.url}}" alt="{{ book.name }}" loading="lazy">
+            {% else %}
+            <div class="no-image">No Image</div>
+            {% endif %}
+        </div>
+        <div class="book-card-info">
+            <p class="product-card-category">{{ book.category.name }}</p>
+            <h3>{{ book.name }}</h3>
+            <p>{{ book.description|truncatewords:15 }}</p>
+            <div class="price-wrapper">
+                {% if book.discount_price %}
+                <span class="current-price">${{ book.discount_price }}</span>
+                <span class="original-price">${{ book.price }}</span>
+                <span class="sale-label">Sale</span>
+                {% else %}
+                <span class="current-price">${{ book.price }}</span>
+                {% endif %}
+            </div>
+            <a href="{% url 'product_detail' book.pk %}" class="details-link">View Details</a>
+        </div>
     </div>
     {% endfor %}
 

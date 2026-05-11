@@ -1,0 +1,85 @@
+.payment-container {
+    max-width: 600px;
+    margin: 80px auto;
+    padding: 24px;
+    background-color: #FFFFFF;
+}
+
+.payment-title {
+    font-family: "Helvetica Now Display Medium", Helvetica, Arial, sans-serif;
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1.20;
+    color: #111111;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.payment-total {
+    font-family: "Helvetica Now Text Medium", Helvetica, Arial, sans-serif;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.20;
+    color: #111111;
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.stripe-form-group {
+    background: #F5F5F5;
+    border: 1px solid #CACACB;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 24px;
+    transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.stripe-form-group.focused {
+    border-color: #111111;
+    box-shadow: 0 0 0 2px rgba(39, 93, 197, 1);
+}
+
+#card-element {
+    font-family: "Helvetica Now Text", Helvetica, Arial, sans-serif;
+}
+
+#card-errors {
+    color: #D30005;
+    font-family: "Helvetica Now Text Medium", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    margin-bottom: 24px;
+    text-align: center;
+    min-height: 20px;
+}
+
+.pay-btn-container {
+    text-align: center;
+}
+
+.pay-btn {
+    background-color: #111111;
+    color: #FFFFFF;
+    font-family: "Helvetica Now Text Medium", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 24px;
+    cursor: pointer;
+    transition: background 200ms ease;
+    width: 100%;
+}
+
+.pay-btn:hover:not(:disabled) {
+    background-color: #707072;
+}
+
+.pay-btn:active:not(:disabled) {
+    opacity: 0.5;
+}
+
+.pay-btn:disabled {
+    background-color: #E5E5E5;
+    color: #9E9EA0;
+    cursor: not-allowed;
+}

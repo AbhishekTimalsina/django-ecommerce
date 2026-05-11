@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/payment.css' %}">
+
+<div class="payment-container">
+    <h2 class="payment-title">Complete Your Payment</h2>
+    <p class="payment-total">Total: ${{ total }}</p>
+
+    <!-- Stripe injects the card input here -->
+    <div class="stripe-form-group" id="card-container">
+        <div id="card-element"></div>
+    </div>
+    <div>
+        <input class="stripe-form-group" style="width: 95%; font-size: 16px;" type="text" id="address"
+            placeholder="Address">
+    </div>
+    <div id="card-errors" style="color:red;"></div>
+
+    <div class="pay-btn-container">
+        <button id="pay-btn" class="pay-btn">Pay Now</button>
+    </div>
+</div>
+
+<!-- Stripe.js -->
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    const stripe = Stripe('{{ publishable_key }}');
+    const elements = stripe.elements({
+        fonts: [
+            {
+                cssSrc: "https://fonts.googleapis.com/css2?family=Helvetica+Now+Text+Medium&display=swap",
+            }
+        ]
+    });
+
+    // create the card input field
+    const card = elements.create('card', {
+        style: {
+            base: {
+                color: '#111111',
+                fontFamily: '"Helvetica Now Text", Helvetica, Arial, sans-serif',
+                fontSmoothing: 'antialiased',
+                fontSize: '16px',
+                '::placeholder': {
+                    color: '#707072'
+                }
+            },
+            invalid: {
+                color: '#D30005',
+                iconColor: '#D30005'
+            }
+        }
+    });
+    card.mount('#card-element');
+
+    // Add focus effects
+    card.addEventListener('focus', () => {
+        document.getElementById('card-container').classList.add('focused');
+    });
+    card.addEventListener('blur', () => {
+        document.getElementById('card-container').classList.remove('focused');
+    });
+
+    // handle errors as user types
+    card.addEventListener('change', function (event) {
+        const errorDiv = document.getElementById('card-errors');
+        errorDiv.textContent = event.error ? event.error.message : '';
+        if (event.error) {
+            document.getElementById('card-container').style.borderColor = '#D30005';
+        } else {
+            document.getElementById('card-container').style.borderColor = '';
+        }
+    });
+
+
+    function getCSRFToken() {
+        return document.cookie.split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+    }
+    // handle pay button click
+    const payBtn = document.getElementById('pay-btn');
+    payBtn.addEventListener('click', async function () {
+        payBtn.disabled = true;
+        payBtn.textContent = 'Processing...';
+
+        const result = await stripe.confirmCardPayment('{{ client_secret }}', {
+            payment_method: {
+                card: card,
+            }
+        });
+
+        if (result.error) {
+            document.getElementById('card-errors').textContent = result.error.message;
+            payBtn.disabled = false;
+            payBtn.textContent = 'Pay Now';
+        } else {
+            const response = await fetch('/payment/confirm/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() },
+                body: JSON.stringify({
+                    payment_intent_id: result.paymentIntent.id,
+                    address: document.getElementById('address').value,
+                })
+            });
+
+            const data = await response.json();
+            window.location.href = `/payment/${data.order_id}/success/`;
+        }
+    });
+</script>
+{% endblock %}

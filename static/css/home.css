@@ -57,41 +57,109 @@ body {
     background: var(--white);
     display: flex;
     flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.2s ease;
 }
 
-.book-card img {
+.book-card:hover {
+    opacity: 0.85;
+}
+
+.book-card-image-wrapper {
+    position: relative;
     width: 100%;
     aspect-ratio: 1 / 1;
-    object-fit: cover;
-    border-radius: 0;
+    overflow: hidden;
     background: var(--gray-100);
+}
+
+.book-card-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     display: block;
+    transition: transform 0.4s ease;
+}
+
+.book-card:hover .book-card-image-wrapper img {
+    transform: scale(1.03);
+}
+
+.sale-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--red);
+    color: var(--white);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    z-index: 1;
+}
+
+.no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gray-100);
+    color: var(--gray-400);
+    font-weight: 500;
+}
+
+.book-card-info {
+    padding: 12px 0;
 }
 
 .book-card h3 {
-    margin: 12px 0 4px 0;
+    margin: 0 0 4px 0;
     font-size: 16px;
     font-weight: 500;
     color: var(--black);
 }
 
 .book-card p {
-    margin: 0;
+    margin: 0 0 8px 0;
     color: var(--gray-400);
     font-size: 16px;
     font-weight: 400;
 }
 
-.book-card .price {
+.price-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     margin-top: 8px;
+}
+
+.price-wrapper .current-price {
+    font-size: 16px;
     font-weight: 500;
     color: var(--black);
-    font-size: 16px;
+}
+
+.price-wrapper .original-price {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--gray-400);
+    text-decoration: line-through;
+}
+
+.price-wrapper .sale-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--red);
+    text-transform: uppercase;
 }
 
 .details-link {
-    align-self: flex-start;
-    margin-top: 16px;
+    display: inline-block;
+    margin-top: 2px;
     background: var(--black);
     color: var(--white);
     text-decoration: none;

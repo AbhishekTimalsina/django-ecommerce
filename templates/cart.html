@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Bag | Bookstore{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cart.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="podium-cart-container">
+    <h1 class="podium-display-heading">BAG</h1>
+
+    <div class="podium-cart-layout">
+        <div class="podium-cart-items-section">
+            {% for item in cart_item %}
+            <div class="podium-cart-item">
+                <div class="podium-cart-item-img">
+                    {% if item.book.images.first %}
+                    <img src="{{ item.book.images.first.image.url }}" alt="Product Image">
+                    {% else %}
+                    <div class="podium-image-placeholder"></div>
+                    {% endif %}
+                </div>
+
+                <div class="podium-cart-item-info">
+                    <div class="podium-cart-item-title-row">
+                        <h2 class="podium-item-title">
+                            {% if item.book.title %}{{ item.book.title }}{% else %}Book{% endif %}
+                        </h2>
+                        <div class="podium-item-price">${{ item.book.discount_price|default:item.book.price }}</div>
+                    </div>
+
+                    <p class="podium-item-desc">{{ item.book.description|truncatewords:20 }}</p>
+
+                    <div class="podium-item-meta">
+                        <span class="podium-item-qty">Quantity: {{ item.quantity }}</span>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="podium-empty-cart">
+                <p>There are no items in your bag.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="podium-cart-summary">
+            <h2 class="podium-summary-title">Summary</h2>
+
+            <div class="podium-summary-row">
+                <span>Subtotal</span>
+                <span>${{ total }}</span>
+            </div>
+            <div class="podium-summary-row">
+                <span>Estimated Delivery</span>
+                <span>Free</span>
+            </div>
+
+            <div class="podium-summary-row podium-summary-total">
+                <span>Total</span>
+                <span>${{ total }}</span>
+            </div>
+
+            <a href="{% url 'payment' %}" class="podium-btn-primary podium-checkout-btn">Checkout</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
