@@ -11,7 +11,7 @@ class BookImageInline(admin.TabularInline):
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
     list_display = ['name', 'price', 'discount_price', 'category']
-    prepopulated_fields = {'slug': ('name',)}
+    # prepopulated_fields = {'slug': ('name',)}
     inlines = [BookImageInline]
 
 @admin.register(Category)

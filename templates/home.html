@@ -23,7 +23,10 @@
             {% endif %}
         </div>
         <div class="book-card-info">
-            <p class="product-card-category">{{ book.category.name }}</p>
+            <!-- <a class="product-card-category" href="{% url 'explore' %}?genre={{ book.category.slug }}">{{book.category.name}}</a> -->
+            <p class="product-card-category">
+                <a href="{% url 'explore' %}?category={{ book.category.name }}">{{ book.category.name }}</a>
+            </p>
             <h3>{{ book.name }}</h3>
             <p>{{ book.description|truncatewords:15 }}</p>
             <div class="price-wrapper">

@@ -130,6 +130,13 @@ body {
     font-weight: 400;
 }
 
+.product-card-category a {
+    text-decoration: none;
+    color: var(--black);
+    font-size: 16px;
+
+}
+
 .price-wrapper {
     display: flex;
     align-items: center;
