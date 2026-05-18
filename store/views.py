@@ -1,6 +1,7 @@
 from .models import Book, Category
 from django.views.generic import ListView, TemplateView, DetailView
 from django.db.models import Q
+from django.http import JsonResponse
   
 # Create your views here.
 class HomeView(ListView):
@@ -67,3 +68,8 @@ class ExploreView(ListView):
           context["current_sort"] = self.request.GET.get("sort", "name")
           context["total_results"] = self.get_queryset().count()
           return context
+
+
+
+def ping(request):
+    return JsonResponse({"status": "alive"})
